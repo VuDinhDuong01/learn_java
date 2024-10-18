@@ -4,16 +4,19 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
+// @Getter
+// @Setter
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 // những cái nào trả về  null thì k cần show ra;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
-    private int code =HttpStatus.CREATED.value();
-    private String error;
-    private String message;
-    private  T result;
+     int code =HttpStatus.CREATED.value();
+     String error;
+     String message;
+      T result;
 }

@@ -6,25 +6,34 @@ import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
+@Data
+// đồng thời tạo ra 2 constructor.
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+// làm cho các thuộc tính là private không cần phải khai báo  nữa
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
     
     @NotNull(message = "NOT_NULL")
     @Size(min =3 , message="USERNAME_INVALID")
-    private String username;
+     String username;
 
     @Size(min = 8, max = 20, message = "password must be at least a created")
     @NonNull
     @NotBlank
-    private String password;
+     String password;
 
-    private String firstName;
+     String firstName;
 
-    private String lastName;
+     String lastName;
     
-    private LocalDate dob;
+     LocalDate dob;
 }

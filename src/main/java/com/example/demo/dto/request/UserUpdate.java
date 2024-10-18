@@ -2,16 +2,20 @@ package com.example.demo.dto.request;
 
 import java.time.LocalDate;
 
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-@Getter
-@Setter
-
+import lombok.experimental.FieldDefaults;
+// @Getter
+// @Setter
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdate {
-    private String username;
-    private String firstName;
-    private String lastName;
-    private LocalDate dob;
+  String username;
+  String firstName;
+  String lastName;
+  LocalDate dob;
 }
 
 
