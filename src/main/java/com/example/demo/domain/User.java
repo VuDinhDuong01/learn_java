@@ -24,13 +24,4 @@ public class User {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-
-
-    // public String getId(){
-    //     return id;
-    // }
-
-    // public void setId(String id){
-    //     this.id = id;
-    // }
 }

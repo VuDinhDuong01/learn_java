@@ -75,13 +75,26 @@
 </dependency>
 	</dependencies>
 
-	<build>
+	<!-- <build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
+	</build> -->
+	<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version> <!-- Hoặc phiên bản mới nhất -->
+            <configuration>
+                <source>17</source> <!-- Đảm bảo phiên bản này khớp với JDK của bạn -->
+                <target>17</target>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 
 </project>

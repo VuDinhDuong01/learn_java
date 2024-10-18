@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.User;
+import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
 import com.example.demo.exception.AppException;
@@ -21,8 +22,7 @@ public class UserService {
 
     public User createUser(UserRequest request) {
         User user = new User();
-
-        if(userRepository.existsByUserName(request.getUsername())){
+        if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
@@ -36,6 +36,7 @@ public class UserService {
     }
 
     public List<User> getAllUser(){
+    
         return userRepository.findAll();
     }
 

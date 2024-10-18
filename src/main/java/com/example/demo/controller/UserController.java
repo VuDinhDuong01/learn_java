@@ -39,8 +39,11 @@ public class UserController {
     } 
 
     @GetMapping("/users")
-    public List<User> getAllUser() {
-        return userService.getAllUser();
+    public ApiResponse<List<User>> getAllUser() {
+        ApiResponse<List<User>> apiResponse= new ApiResponse<>();
+        apiResponse.setMessage("success");
+        apiResponse.setResult(userService.getAllUser());
+        return apiResponse;
     }
 
     @GetMapping("/users/{id}")
