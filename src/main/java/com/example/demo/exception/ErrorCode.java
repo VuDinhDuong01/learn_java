@@ -9,7 +9,8 @@ public enum ErrorCode {
     USER_EXISTED(400,"user existed"),
     USERNAME_INVALID(4230,"username must be 4"),
     INVALID_KEY(1002,"INVALID MESSAGE KEY"),
-    NOT_NULL(400,"NOT NULL");
+    NOT_NULL(400,"NOT NULL"),
+    USER_NOT_EXISTED(400,"USER_NOT_EXISTED");
   
     ErrorCode(int code, String message){
         this.code= code;

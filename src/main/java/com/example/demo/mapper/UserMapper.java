@@ -7,9 +7,10 @@ import org.mapstruct.MappingTarget;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.dto.response.UserResponse;
 
-@Mapper(componentModel ="spring")
+
+@Mapper(componentModel = "spring")
 public interface  UserMapper {
     User toUser(UserRequest request);
     //  source là cái nguồn lấy để map
@@ -19,8 +20,7 @@ public interface  UserMapper {
     // khi có ignore thì sẽ trường dữ liệu được trả về null
     // ví dụ @Mapping(target = "lastName", ignore = true) thì lúc này lastName= null
     @Mapping(source = "firstName",target = "lastName")
-
-    UserRepository toUserResponse(User user);
+     UserResponse toUserResponse(User user);
     // cái này báo là update request vào user
     void updateUser(@MappingTarget User user, UserUpdate request);
 }

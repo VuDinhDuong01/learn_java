@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -14,9 +15,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 // những cái nào trả về  null thì k cần show ra;
 @JsonInclude(JsonInclude.Include.NON_NULL)
+
+// @Builder
 public class ApiResponse<T> {
      int code =HttpStatus.CREATED.value();
      String error;
      String message;
       T result;
+    public static Object builder() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    }
 }

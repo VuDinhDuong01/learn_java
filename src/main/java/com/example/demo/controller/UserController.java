@@ -32,7 +32,7 @@ public class UserController {
     @PostMapping("/users")
     public ApiResponse<User> createUser(@RequestBody @Valid UserRequest entity) {
 
-        ApiResponse<User> ApiResponse = new ApiResponse();
+        ApiResponse<User> ApiResponse = new ApiResponse<User>();
         ApiResponse.setResult(userService.createUser(entity));
         ApiResponse.setMessage("create success");
         return  ApiResponse;
@@ -40,7 +40,7 @@ public class UserController {
 
     @GetMapping("/users")
     public ApiResponse<List<User>> getAllUser() {
-        ApiResponse<List<User>> apiResponse= new ApiResponse<>();
+        ApiResponse<List<User>> apiResponse= new ApiResponse<List<User>>();
         apiResponse.setMessage("success");
         apiResponse.setResult(userService.getAllUser());
         return apiResponse;
