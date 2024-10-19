@@ -32,17 +32,19 @@ public class UserController {
     @PostMapping("/users")
     public ApiResponse<User> createUser(@RequestBody @Valid UserRequest entity) {
 
-        ApiResponse<User> ApiResponse = new ApiResponse<User>();
-        ApiResponse.setResult(userService.createUser(entity));
-        ApiResponse.setMessage("create success");
-        return  ApiResponse;
+        // ApiResponse<User> ApiResponse = new ApiResponse<User>();
+        ApiResponse<User> apiResponse= ApiResponse.<User>builder().message("create success").result(userService.createUser(entity)).build();
+        // ApiResponse.setResult(userService.createUser(entity));
+        // ApiResponse.setMessage("create success");
+        return  apiResponse;
     } 
 
     @GetMapping("/users")
     public ApiResponse<List<User>> getAllUser() {
-        ApiResponse<List<User>> apiResponse= new ApiResponse<List<User>>();
-        apiResponse.setMessage("success");
-        apiResponse.setResult(userService.getAllUser());
+        // ApiResponse<List<User>> apiResponse= new ApiResponse<List<User>>();
+        ApiResponse<List<User>> apiResponse = ApiResponse.<List<User>>builder().message("success").result(userService.getAllUser()).build();
+        // apiResponse.setMessage("success");
+        // apiResponse.setResult(userService.getAllUser());
         return apiResponse;
     }
 

@@ -15,15 +15,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 // những cái nào trả về  null thì k cần show ra;
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
-// @Builder
+@Builder
 public class ApiResponse<T> {
-     int code =HttpStatus.CREATED.value();
+    
+    int code =HttpStatus.CREATED.value();
      String error;
      String message;
       T result;
-    public static Object builder() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'builder'");
-    }
 }

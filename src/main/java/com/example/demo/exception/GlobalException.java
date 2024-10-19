@@ -17,9 +17,10 @@ public class GlobalException {
     // RuntimeException...
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiResponse> handleResponseEntity(Exception exception) {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        apiResponse.setMessage(exception.getMessage());
+        // ApiResponse apiResponse = new ApiResponse();
+    ApiResponse apiResponse = ApiResponse.builder().code(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(exception.getMessage()).build();
+        // apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        // apiResponse.setMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
@@ -42,9 +43,10 @@ public class GlobalException {
 
         // nó trả về ErrorCode.USER_EXISTED
         ErrorCode errorCode = exception.getErrorCode();
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
+        // ApiResponse apiResponse = new ApiResponse();
+        ApiResponse apiResponse = ApiResponse.builder().code(errorCode.getCode()).message(errorCode.getMessage()).build();
+        // apiResponse.setCode(errorCode.getCode());
+        // apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
@@ -57,9 +59,10 @@ public class GlobalException {
         } catch (IllegalArgumentException eIllegalArgumentException) {
 
         }
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
+        // ApiResponse apiResponse = new ApiResponse();
+        ApiResponse apiResponse= ApiResponse.builder().code(errorCode.getCode()).message(errorCode.getMessage()).build();
+        // apiResponse.setCode(errorCode.getCode());
+        // apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 }
