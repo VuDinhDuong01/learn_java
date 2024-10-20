@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,11 +12,11 @@ import org.springframework.stereotype.Service;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
-import com.example.demo.dto.response.UserResponse;
 import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -42,6 +41,7 @@ public class UserService {
      UserMapper userMapper;
 
      PasswordEncoder  passwordEncoder;
+     RoleRepository roleRepository;
 
     public User createUser(UserRequest request) {
     // User user = new User();
@@ -75,6 +75,8 @@ public class UserService {
 
     // tạo 1 proxy khi nào là admin.
     // kiểm tra trc khi gọi method
+    // hasRole sẽ work khi có ROLE đứng đầu 
+    // k có thì dùng hasAuthority
     @PreAuthorize("hasRole('ADMIN')")  
     public List<User> getAllUser(){
         log.info("in method get user");
@@ -99,6 +101,9 @@ public class UserService {
         // user.setLastName(entity.getLastName());
         // user.setUsername(entity.getUsername());
          userMapper.updateUser(user,entity);
+         user.setPassword(passwordEncoder.encode(entity.getFirstName()));
+         var roles =  roleRepository.findAllById(entity.getRoles());
+         user.setRoles(new HashSet<>(roles));
         return userRepository.save(user);
     }
 

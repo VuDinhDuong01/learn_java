@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -7,7 +8,7 @@ import org.mapstruct.MappingTarget;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
-import com.example.demo.dto.response.UserResponse;
+
 
 
 @Mapper(componentModel = "spring")
@@ -22,5 +23,6 @@ public interface  UserMapper {
     @Mapping(source = "firstName",target = "lastName")
     //  UserResponse toUserResponse(User user);
     // cái này báo là update request vào user
+    @Mapping(target = "roles",ignore = true)
     void updateUser(@MappingTarget User user, UserUpdate request);
 }

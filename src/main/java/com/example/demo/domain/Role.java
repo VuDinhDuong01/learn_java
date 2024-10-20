@@ -31,11 +31,5 @@ public class Role {
 
      // 1 role sẽ có nhiều permission
      @ManyToMany
-     Set<String> Permission;
-
-
-    public void setPermission(Object permission2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPermission'");
-    }
+     Set<Permission> Permission;
 }

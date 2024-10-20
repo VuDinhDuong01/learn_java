@@ -11,7 +11,7 @@ import com.example.demo.dto.response.RoleResponse;
 public interface RoleMapper {
 
     // bỏ qua permisson, k map vào.
-    @Mapping(target  = "permission",ignore = true)
+    @Mapping(target  = "permissions",ignore = true)
     Role toRole(RoleRequest request);
     RoleResponse tRoleResponse(Role role);
 } 

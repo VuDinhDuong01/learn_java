@@ -42,80 +42,85 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthenticationService {
     UserRepository userRepository;
-   public AuthenticationResponse authenticate(AuthenticationRequest request){
-        var user = userRepository.findByUsername(request.getUsername()).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        var user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        boolean authenticated=  passwordEncoder.matches(request.getPassword(), user.getPassword());
-        if(!authenticated){
+        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        if (!authenticated) {
             throw new AppException(ErrorCode.INVALID_KEY);
 
         }
 
         String token = generateToken(user);
         return AuthenticationResponse.builder()
-        .Authenticated(true)
-        .token(token)
-        .build();
-
+                .Authenticated(true)
+                .token(token)
+                .build();
 
     }
+
     @NonFinal
     // @Value("${jwt.signerKey}")
-    protected  String  signerKey="3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
-    private String generateToken(User user){
-        
-        // tạo headers.
-        JWSHeader header= new JWSHeader(JWSAlgorithm.HS512);
-        // TẠO BODY
-        JWTClaimsSet jwtClaimsSet= new JWTClaimsSet.Builder()
-        .subject(user.getUsername())
-        .issuer("ngocduong.com")
-        .issueTime(new Date())
-        // set tg cho token
-        .expirationTime(new Date(
-            Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
-        ))
-        .claim("scop",buidlScop(user) )
-        
-        .build();
+    protected String signerKey = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
 
+    private String generateToken(User user) {
+
+        // tạo headers.
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        // TẠO BODY
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(user.getUsername())
+                .issuer("ngocduong.com")
+                .issueTime(new Date())
+                // set tg cho token
+                .expirationTime(new Date(
+                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+                .claim("scop", buidlScop(user))
+
+                .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
-        
-        try{
+
+        try {
             jwsObject.sign(new MACSigner(signerKey.getBytes()));
             return jwsObject.serialize();
-        }catch(Exception e){
+        } catch (Exception e) {
             log.warn("not created token");
-            throw new RuntimeException(e) ;   
+            throw new RuntimeException(e);
         }
     }
 
-    public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException{
+    public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
 
         var token = request.getToken();
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
         Date expityDate = signedJWT.getJWTClaimsSet().getExpirationTime();
-       var verified =  signedJWT.verify(verifier);
+        var verified = signedJWT.verify(verifier);
 
-       return IntrospectResponse.builder()
-       .valid(verified && expityDate.after(new Date()))
-       .build();
+        return IntrospectResponse.builder()
+                .valid(verified && expityDate.after(new Date()))
+                .build();
 
     }
 
     // custom scop
-    private String buidlScop(User  user){
-        StringJoiner stringJoiner=  new StringJoiner(" ");
-        // if(!CollectionUtils.isEmpty(user.getRoles())){
-        //     // user.getRoles().forEach(s-> stringJoiner.add(s));
-        //     // viet cách khác
-        //     user.getRoles().forEach(stringJoiner::add);
-            
-        // }
+    private String buidlScop(User user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            // user.getRoles().forEach(s-> stringJoiner.add(s));
+            // viet cách khác
+            user.getRoles().forEach(role -> {
+                stringJoiner.add(role.getName());
+                if (CollectionUtils.isEmpty(role.getPermission())) {
+                    role.getPermission().forEach(permission -> stringJoiner.add(permission.getName()));
+                }
+            });
+        }
         return stringJoiner.toString();
     }
 }
