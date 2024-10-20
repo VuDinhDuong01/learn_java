@@ -20,24 +20,23 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// làm cho các thuộc tính là private không cần phải khai báo  nữa
+// làm cho các thuộc tính là private không cần phải khai báo nữa
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
-    
+
     @NotNull(message = "NOT_NULL")
-    @Size(min =3 , message="USERNAME_INVALID")
-     String username;
+    @Size(min = 3, message = "USERNAME_INVALID")
+    String username;
 
     @Size(min = 8, max = 20, message = "password must be at least a created")
     @NonNull
     @NotBlank
-     String password;
+    String password;
 
-     String firstName;
+    String firstName;
 
-     String lastName;
-    
+    String lastName;
 
-     @DobConstraint(min = 18, message = "INVALID")
-     LocalDate dob;
+    @DobConstraint(min = 18, message = "INVALID_DOB")
+    LocalDate dob;
 }
