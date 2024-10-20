@@ -5,19 +5,23 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.example.demo.domain.Token;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.AuthenticationRequest;
 import com.example.demo.dto.request.IntrospectRequest;
+import com.example.demo.dto.request.LogoutRequest;
 import com.example.demo.dto.response.AuthenticationResponse;
 import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
+import com.example.demo.repository.TokenRepository;
 import com.example.demo.repository.UserRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -42,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthenticationService {
     UserRepository userRepository;
-
+    TokenRepository tokenRepository;
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -78,6 +82,7 @@ public class AuthenticationService {
                 // set tg cho token
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scop", buidlScop(user))
 
                 .build();
@@ -97,13 +102,14 @@ public class AuthenticationService {
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
 
         var token = request.getToken();
-        JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expityDate = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verified = signedJWT.verify(verifier);
+        // JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
+        // SignedJWT signedJWT = SignedJWT.parse(token);
+        // Date expityDate = signedJWT.getJWTClaimsSet().getExpirationTime();
+        // var verified = signedJWT.verify(verifier);
+        verifyToken(token);
 
         return IntrospectResponse.builder()
-                .valid(verified && expityDate.after(new Date()))
+                .valid(true)
                 .build();
 
     }
@@ -122,5 +128,32 @@ public class AuthenticationService {
             });
         }
         return stringJoiner.toString();
+    }
+
+
+    public void logout (LogoutRequest token) throws JOSEException, ParseException{
+        var signToken = verifyToken(token.getToken());
+
+        String jit= signToken.getJWTClaimsSet().getJWTID();
+        Date expiryDate = signToken.getJWTClaimsSet().getExpirationTime();
+        Token mapperToken = Token.builder()
+        .id(jit)
+        .expiryTime(expiryDate)
+        .build();
+
+        tokenRepository.save(mapperToken);
+
+    }
+
+    private  SignedJWT verifyToken( String token) throws JOSEException, ParseException{
+        JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        Date expityDate = signedJWT.getJWTClaimsSet().getExpirationTime();
+        var verified = signedJWT.verify(verifier);
+        if(verified && expityDate.after(new Date())){
+            throw new AppException(ErrorCode.INVALID_DOB);
+        }
+        return signedJWT;
+
     }
 }

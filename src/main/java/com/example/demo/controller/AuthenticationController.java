@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.AuthenticationRequest;
 import com.example.demo.dto.request.IntrospectRequest;
+import com.example.demo.dto.request.LogoutRequest;
 import com.example.demo.dto.response.AuthenticationResponse;
 import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.service.AuthenticationService;
@@ -20,7 +21,6 @@ import java.text.ParseException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -28,10 +28,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
+
     @PostMapping("login")
     AuthenticationResponse login(@RequestBody AuthenticationRequest entity) {
         var result = authenticationService.authenticate(entity);
-      return result;
+        return result;
     }
 
     @SuppressWarnings("unused")
@@ -41,14 +42,19 @@ public class AuthenticationController {
         try {
             result = authenticationService.introspect(token);
             return ApiResponse.<IntrospectResponse>builder()
-        .result(result)
-        .build();
+                    .result(result)
+                    .build();
         } catch (ParseException | JOSEException e) {
             e.printStackTrace();
         }
         return null;
-        
 
     }
-    
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest token) throws JOSEException, ParseException {
+        authenticationService.logout(token);
+        return ApiResponse.<Void>builder().build();
+    }
+
 }
