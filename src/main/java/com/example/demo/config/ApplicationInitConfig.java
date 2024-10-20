@@ -36,7 +36,7 @@ public class ApplicationInitConfig {
                 User user = (User) User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                        .roles(rolesSet)
+                        // .roles(rolesSet)
                         .build();
                 userRepository.save(user);
                 log.warn("đã tạo user admin khi application run");

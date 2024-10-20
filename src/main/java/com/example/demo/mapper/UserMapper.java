@@ -20,7 +20,7 @@ public interface  UserMapper {
     // khi có ignore thì sẽ trường dữ liệu được trả về null
     // ví dụ @Mapping(target = "lastName", ignore = true) thì lúc này lastName= null
     @Mapping(source = "firstName",target = "lastName")
-     UserResponse toUserResponse(User user);
+    //  UserResponse toUserResponse(User user);
     // cái này báo là update request vào user
     void updateUser(@MappingTarget User user, UserUpdate request);
 }

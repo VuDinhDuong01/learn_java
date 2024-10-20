@@ -1,8 +1,9 @@
 package com.example.demo.dto.request;
 
+
+
 import org.springframework.http.HttpStatus;
 
-import com.example.demo.domain.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AccessLevel;
@@ -23,4 +24,5 @@ public class ApiResponse<T> {
      String error;
      String message;
       T result;
+    
 }

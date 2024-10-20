@@ -1,11 +1,10 @@
 package com.example.demo.domain;
 
-import java.time.LocalDate;
 import java.util.Set;
 
+
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -16,24 +15,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+@Table(name = "role")
+public class Role {
+     @Id
+     String name;
+     String description;
 
-    String username;
-    String password;
-    String firstName;
-    String lastName;
-    LocalDate dob;
-    
-    @ManyToMany
-    Set<Role> roles;
+
+     // 1 role sẽ có nhiều permission
+     @ManyToMany
+     Set<String> Permission;
+
+
+    public void setPermission(Object permission2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPermission'");
+    }
 }

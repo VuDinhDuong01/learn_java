@@ -110,12 +110,12 @@ public class AuthenticationService {
     // custom scop
     private String buidlScop(User  user){
         StringJoiner stringJoiner=  new StringJoiner(" ");
-        if(!CollectionUtils.isEmpty(user.getRoles())){
-            // user.getRoles().forEach(s-> stringJoiner.add(s));
-            // viet cách khác
-            user.getRoles().forEach(stringJoiner::add);
+        // if(!CollectionUtils.isEmpty(user.getRoles())){
+        //     // user.getRoles().forEach(s-> stringJoiner.add(s));
+        //     // viet cách khác
+        //     user.getRoles().forEach(stringJoiner::add);
             
-        }
+        // }
         return stringJoiner.toString();
     }
 }

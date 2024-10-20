@@ -63,7 +63,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         HashSet<String> roles= new HashSet<String>();
         roles.add(Role.USER.name());
-        user.setRoles(roles);
+        // user.setRoles(roles);
         // user.setDob(request.getDob());
         // user.setFirstName(request.getFirstName());
         // user.setLastName(request.getLastName());
@@ -107,10 +107,11 @@ public class UserService {
     }
 
 
-    public  UserResponse getMyInfo(){
+    public  User getMyInfo(){
        var context =  SecurityContextHolder .getContext();
        String name =context.getAuthentication().getName();
       User user = userRepository.findByUsername(name).orElseThrow(()-> new AppException(ErrorCode.USER_EXISTED));
-      return userMapper.toUserResponse(user);
+    //   return userMapper.toUserResponse(user);
+    return user;
     }
 }
