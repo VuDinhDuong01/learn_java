@@ -17,9 +17,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import com.example.demo.enums.Role;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -30,24 +27,23 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
         final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/users" };
-        
+
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
         httpSecurity.authorizeRequests(
                 request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         // .requestMatchers(HttpMethod.GET,"/api/v1/users")
-                        // // có thể dùng 1 trong 2 cách 
+                        // // có thể dùng 1 trong 2 cách
                         // // đây là phân quyên thèo url
                         // .hasRole(Role.ADMIN.name())
                         // .hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated());
 
         //
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfig -> 
-        jwtConfig.decoder(jwtDecoder())
-        .jwtAuthenticationConverter(jwtAuthenticationConverter())
-        )
-        );
+        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfig -> jwtConfig.decoder(jwtDecoder())
+                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthentioncationEntryPoint())
+                );
         // tắt cors
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
@@ -64,20 +60,21 @@ public class SecurityConfig {
                 .build();
     };
 
-    // khi đánh dấu  là Bean thì sẽ đưa biến passwordEncoder vào application context và có thể gọi ở mọi nơi trong ứng dụng.
+    // khi đánh dấu là Bean thì sẽ đưa biến passwordEncoder vào application context
+    // và có thể gọi ở mọi nơi trong ứng dụng.
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
 
-
     // config scope
     @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter(){
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter= new JwtGrantedAuthoritiesConverter();
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE ");
-        JwtAuthenticationConverter jwtAuthenticationConverter= new JwtAuthenticationConverter();
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
+
 }

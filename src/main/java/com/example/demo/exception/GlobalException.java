@@ -81,4 +81,7 @@ public class GlobalException {
                 .message(errorCode.getMessage())
                 .build());
     }
+
+
+    // vì 401 là sử lý lỗi ở phần filter trước khi vào controller nên sử lý ở phần security config
 }
