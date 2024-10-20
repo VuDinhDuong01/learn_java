@@ -2,6 +2,8 @@ package com.example.demo.dto.request;
 
 import java.time.LocalDate;
 
+import com.example.demo.validator.DobConstraint;
+
 import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,5 +37,7 @@ public class UserRequest {
 
      String lastName;
     
+
+     @DobConstraint(min = 18, message = "INVALID")
      LocalDate dob;
 }
