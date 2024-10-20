@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,6 +57,8 @@ public class UserService {
 
         
         if(userRepository.existsByUsername(request.getUsername())){
+
+            // khi tạo user cùng 1 lúc thì throw này k check.
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         // dùng mapper thì sẽ map user.
@@ -63,6 +66,13 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         HashSet<String> roles= new HashSet<String>();
         roles.add(Role.USER.name());
+
+       try{
+        user= userRepository.save(user);
+       }catch(DataIntegrityViolationException exception){
+        // show error
+        
+       }
         // user.setRoles(roles);
         // user.setDob(request.getDob());
         // user.setFirstName(request.getFirstName());
