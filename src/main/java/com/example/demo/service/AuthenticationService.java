@@ -47,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService {
     UserRepository userRepository;
     TokenRepository tokenRepository;
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -130,27 +131,30 @@ public class AuthenticationService {
         return stringJoiner.toString();
     }
 
-
-    public void logout (LogoutRequest token) throws JOSEException, ParseException{
+    public void logout(LogoutRequest token) throws JOSEException, ParseException {
         var signToken = verifyToken(token.getToken());
 
-        String jit= signToken.getJWTClaimsSet().getJWTID();
+        String jit = signToken.getJWTClaimsSet().getJWTID();
         Date expiryDate = signToken.getJWTClaimsSet().getExpirationTime();
         Token mapperToken = Token.builder()
-        .id(jit)
-        .expiryTime(expiryDate)
-        .build();
+                .id(jit)
+                .expiryTime(expiryDate)
+                .build();
 
         tokenRepository.save(mapperToken);
 
     }
 
-    private  SignedJWT verifyToken( String token) throws JOSEException, ParseException{
+    // public Object refreshToken(Object request){
+
+    // }
+
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
         Date expityDate = signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified = signedJWT.verify(verifier);
-        if(verified && expityDate.after(new Date())){
+        if (verified && expityDate.after(new Date())) {
             throw new AppException(ErrorCode.INVALID_DOB);
         }
         return signedJWT;
