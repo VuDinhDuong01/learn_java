@@ -56,11 +56,11 @@ public class UserService {
         .build();
 
         
-        if(userRepository.existsByUsername(request.getUsername())){
+        // if(userRepository.existsByUsername(request.getUsername())){
 
-            // khi tạo user cùng 1 lúc thì throw này k check.
-            throw new AppException(ErrorCode.USER_EXISTED);
-        }
+        //     // khi tạo user cùng 1 lúc thì throw này k check.
+        //     throw new AppException(ErrorCode.USER_EXISTED);
+        // }
         // dùng mapper thì sẽ map user.
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));

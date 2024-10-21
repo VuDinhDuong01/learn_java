@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,8 +69,11 @@ public class AuthenticationService {
     }
 
     @NonFinal
-    // @Value("${jwt.signerKey}")
-    protected String signerKey = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
+   
+    @Value("${jwt.signerKey}")
+   
+    protected String signerKey ;
+    // = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
 
     private String generateToken(User user) {
 
