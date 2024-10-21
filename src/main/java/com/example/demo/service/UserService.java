@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -10,9 +11,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.constants.PredefinedRole;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
+import com.example.demo.dto.response.RoleResponse;
 import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
@@ -24,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
 
 @Service
 // sẽ nhóm tất cả các Autowired thành 1 constructor.
@@ -47,13 +51,6 @@ public class UserService {
     public User createUser(UserRequest request) {
     // User user = new User();
 
-    // tạo ra đối tượng mà k cần truyền tất cả các tham số trong constructor.
-        UserRequest request1 = UserRequest.builder()
-        .firstName("")
-        .lastName("")
-        .password("")
-        .username("")
-        .build();
 
         
         // if(userRepository.existsByUsername(request.getUsername())){
@@ -64,21 +61,21 @@ public class UserService {
         // dùng mapper thì sẽ map user.
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<String> roles= new HashSet<String>();
-        roles.add(Role.USER.name());
-
+        // HashSet<String> roles= new HashSet<String>();
+        // HashSet<Role> roles = new HashSet<>();
+        var roles = roleRepository.findById("USER");
+        // roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
+        user.setRoles(new HashSet<>(roles));
+        // roles.add(Role.USER.name());
+        // user.setRoles(roles);
+        // System.out.println("usermappter:" +  roles);
        try{
         user= userRepository.save(user);
        }catch(DataIntegrityViolationException exception){
         // show error
         
        }
-        // user.setRoles(roles);
-        // user.setDob(request.getDob());
-        // user.setFirstName(request.getFirstName());
-        // user.setLastName(request.getLastName());
-        // user.setPassword(request.getPassword());
-        // user.setUsername(request.getUsername());
+
         return userRepository.save(user);
     }
 
@@ -106,10 +103,6 @@ public class UserService {
 
     public User updateUser(String id , UserUpdate entity){
          User user = getDetailUser(id);
-        // user.setDob(entity.getDob());
-        // user.setFirstName(entity.getFirstName());
-        // user.setLastName(entity.getLastName());
-        // user.setUsername(entity.getUsername());
          userMapper.updateUser(user,entity);
          user.setPassword(passwordEncoder.encode(entity.getFirstName()));
          var roles =  roleRepository.findAllById(entity.getRoles());

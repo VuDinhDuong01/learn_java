@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -44,4 +45,6 @@ public class User {
     
     @ManyToMany
     Set<Role> roles;
+
+
 }

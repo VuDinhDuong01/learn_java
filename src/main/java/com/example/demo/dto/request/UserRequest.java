@@ -24,11 +24,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
 
-    @NotNull(message = "NOT_NULL")
-    @Size(min = 3, message = "USERNAME_INVALID")
+    // @NotNull(message = "NOT_NULL")
+    // @Size(min = 3, message = "USERNAME_INVALID")
     String username;
 
-    @Size(min = 8, max = 20, message = "password must be at least a created")
+    // @Size(min = 8, max = 20, message = "password must be at least a created")
     @NonNull
     @NotBlank
     String password;
@@ -37,6 +37,6 @@ public class UserRequest {
 
     String lastName;
 
-    @DobConstraint(min = 18, message = "INVALID_DOB")
+    // @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
 }

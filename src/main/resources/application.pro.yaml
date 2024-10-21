@@ -1,4 +1,0 @@
-
-jwt:
-    signerKey: dfadfa
-    valid-duration: 3600

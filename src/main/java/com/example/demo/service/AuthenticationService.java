@@ -70,8 +70,7 @@ public class AuthenticationService {
 
     @NonFinal
    
-    @Value("${jwt.signerKey}")
-   
+    @Value("${jwt.signerKey:defaultSignerKey}")
     protected String signerKey ;
     // = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
 
