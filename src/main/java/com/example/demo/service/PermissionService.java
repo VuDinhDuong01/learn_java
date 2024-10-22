@@ -21,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PermissionService {
 
-    PermissionRepository permissionRepository;
-    PermissionMapper permissionMapper;
+    final PermissionRepository permissionRepository;
+    final PermissionMapper permissionMapper;
     public PermissionResponse create(PermissionRequest request) {
 
         Permission permission = permissionMapper.toPermission(request);

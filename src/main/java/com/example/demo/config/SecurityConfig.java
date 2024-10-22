@@ -20,6 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -29,18 +31,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/users" };
+        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/users" ,"/api/v1/role","/api/v1/permission"};
 
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
-        httpSecurity.authorizeRequests(
+        httpSecurity.authorizeHttpRequests(
                 request -> request
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        // .requestMatchers(HttpMethod.GET,"/api/v1/users")
-                        // // có thể dùng 1 trong 2 cách
-                        // // đây là phân quyên thèo url
-                        // .hasRole(Role.ADMIN.name())
-                        // .hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated());
+                        .requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers("api/v1/users")
+                        .hasAnyAuthority("ROLE_ADMIN")
+                        .anyRequest()
+                        .authenticated());
 
         //
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfig -> jwtConfig.decoder(jwtDecoder())
@@ -74,7 +74,7 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE ");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;

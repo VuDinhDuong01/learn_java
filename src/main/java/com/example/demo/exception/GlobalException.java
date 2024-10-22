@@ -1,19 +1,17 @@
 package com.example.demo.exception;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.demo.dto.request.ApiResponse;
 
-import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
@@ -52,11 +50,8 @@ public class GlobalException {
 
         // nó trả về ErrorCode.USER_EXISTED
         ErrorCode errorCode = exception.getErrorCode();
-        // ApiResponse apiResponse = new ApiResponse();
         ApiResponse apiResponse = ApiResponse.builder().code(errorCode.getCode()).message(errorCode.getMessage())
                 .build();
-        // apiResponse.setCode(errorCode.getCode());
-        // apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
@@ -68,23 +63,10 @@ public class GlobalException {
         Map<String, Object> attributes = null;
         try {
             errorCode = errorCode.valueOf(enumKey);
-
+           
             // lấy attributes
-            List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
-
-            if (!allErrors.isEmpty()) {
-                // Sử dụng get(0) để lấy phần tử đầu tiên từ danh sách lỗi
-                ObjectError firstError = allErrors.get(0);
-
-                // Kiểm tra xem có phải là ConstraintViolation và unwrap nếu cần
-                if (firstError instanceof ConstraintViolation) {
-                    ConstraintViolation<?> constraintViolation = (ConstraintViolation<?>) firstError;
-
-                    // Lấy attributes từ constraint
-                    attributes = constraintViolation.getConstraintDescriptor().getAttributes();
-                    log.info(attributes.toString());
-                }
-            }
+            var allErrors = exception.getBody();
+            System.out.println("error here:" + allErrors);
         } catch (IllegalArgumentException eIllegalArgumentException) {
 
         }
@@ -95,8 +77,6 @@ public class GlobalException {
                         ? mapAttribute(errorCode.getMessage(), attributes)
                         : errorCode.getMessage())
                 .build();
-        // apiResponse.setCode(errorCode.getCode());
-        // apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
@@ -110,6 +90,15 @@ public class GlobalException {
                 .build());
     }
 
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ResponseEntity<ApiResponse> handleDataIntegrityViolation(DataIntegrityViolationException exception){
+        ErrorCode errorCode = ErrorCode.USER_EXISTED;
+        return ResponseEntity.status(errorCode.getStatusCode()).body(ApiResponse.builder()
+        .code(errorCode.getCode())
+        .message(errorCode.getMessage())
+        .build());
+    }
     // vì 401 là sử lý lỗi ở phần filter trước khi vào controller nên sử lý ở phần
     // security config
 

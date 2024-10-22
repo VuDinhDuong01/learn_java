@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class PermissionController {
-    PermissionService permissionService;
+    final PermissionService permissionService;
 
 
     @GetMapping("/permission")
