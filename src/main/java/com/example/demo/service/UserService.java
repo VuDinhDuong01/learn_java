@@ -12,11 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.constants.PredefinedRole;
+import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
 import com.example.demo.dto.response.RoleResponse;
-import com.example.demo.enums.Role;
+import com.example.demo.enums.RoleEnum;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
@@ -28,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Service
 // sẽ nhóm tất cả các Autowired thành 1 constructor.
 @RequiredArgsConstructor
@@ -36,90 +36,67 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserService {
-    // @Autowired
-     UserRepository userRepository;
 
-    // public UserService(UserRepository userRepository) {
-    //     this.userRepository = userRepository;
-    // }
-    // @Autowired
-     UserMapper userMapper;
+    final UserRepository userRepository;
+    UserMapper userMapper;
 
-     PasswordEncoder  passwordEncoder;
-     RoleRepository roleRepository;
+    PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public User createUser(UserRequest request) {
-    // User user = new User();
-
-
-        
-        // if(userRepository.existsByUsername(request.getUsername())){
-
-        //     // khi tạo user cùng 1 lúc thì throw này k check.
-        //     throw new AppException(ErrorCode.USER_EXISTED);
-        // }
-        // dùng mapper thì sẽ map user.
-        User user = userMapper.toUser(request);
+        var user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        // HashSet<String> roles= new HashSet<String>();
-        // HashSet<Role> roles = new HashSet<>();
-        var roles = roleRepository.findById("USER");
-        // roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
-        user.setRoles(new HashSet<>(roles));
-        // roles.add(Role.USER.name());
-        // user.setRoles(roles);
-        // System.out.println("usermappter:" +  roles);
-       try{
-        user= userRepository.save(user);
-       }catch(DataIntegrityViolationException exception){
-        // show error
-        
-       }
+        HashSet<Role> roles = new HashSet<>();
+         roleRepository.findById(RoleEnum.USER.name()).ifPresent(roles::add);
+        user.setRoles(roles);
+        try {
+            user = userRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+        }
 
         return userRepository.save(user);
     }
-
 
     // tạo 1 proxy khi nào là admin.
     // kiểm tra trc khi gọi method
-    // hasRole sẽ work khi có ROLE đứng đầu 
+    // hasRole sẽ work khi có ROLE_ đứng đầu
     // k có thì dùng hasAuthority
-    @PreAuthorize("hasRole('ADMIN')")  
-    public List<User> getAllUser(){
+    // hasAuthority sẽ map chính xác với scope
+    @PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
+    public List<User> getAllUser() {
         log.info("in method get user");
         return userRepository.findAll();
     }
-     
 
     // kiểm tra sau khi gọi method
     // check nếu user đang đang nhập === với username lúc authentication.
-    @PostAuthorize("returnObject.username== authentication.name") 
-    public User getDetailUser(String id){
+    @PostAuthorize("returnObject.username== authentication.name")
+    public User getDetailUser(String id) {
         // vẫn được gọi nhưng k trả về
-        // PostAuthorize thằng làm cho gọi xong thì mới check roles nên k trả về  dữ liệu khi khác roles.
-       log.warn("In method get user by id");
-        return  userRepository.findById(id).orElseThrow(()->new RuntimeException("user not found"));
+        // PostAuthorize thằng làm cho gọi xong thì mới check roles nên k trả về dữ liệu
+        // khi khác roles.
+        log.warn("In method get user by id");
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
     }
 
-    public User updateUser(String id , UserUpdate entity){
-         User user = getDetailUser(id);
-         userMapper.updateUser(user,entity);
-         user.setPassword(passwordEncoder.encode(entity.getFirstName()));
-         var roles =  roleRepository.findAllById(entity.getRoles());
-         user.setRoles(new HashSet<>(roles));
+    public User updateUser(String id, UserUpdate entity) {
+        User user = getDetailUser(id);
+        userMapper.updateUser(user, entity);
+        user.setPassword(passwordEncoder.encode(entity.getFirstName()));
+        var roles = roleRepository.findAllById(entity.getRoles());
+        user.setRoles(new HashSet<>(roles));
         return userRepository.save(user);
     }
 
-    public void deleteUser(String id){
-         userRepository.deleteById(id);
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);
     }
 
-
-    public  User getMyInfo(){
-       var context =  SecurityContextHolder .getContext();
-       String name =context.getAuthentication().getName();
-      User user = userRepository.findByUsername(name).orElseThrow(()-> new AppException(ErrorCode.USER_EXISTED));
-    //   return userMapper.toUserResponse(user);
-    return user;
+    public User getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
+        // return userMapper.toUserResponse(user);
+        return user;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.domain.User;
-import com.example.demo.enums.Role;
+import com.example.demo.enums.RoleEnum;
 import com.example.demo.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -34,7 +34,7 @@ public class ApplicationInitConfig {
         return args -> {
             if (userRepository.findByUsername("admin").isEmpty()) {
                 HashSet<String> rolesSet = new HashSet<>();
-                rolesSet.add(Role.ADMIN.name());
+                rolesSet.add(RoleEnum.ADMIN.name());
 
                 User user = (User) User.builder()
                         .username("admin")

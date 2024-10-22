@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/v1")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleController {
-    RoleService roleService;
+    final RoleService roleService;
 
     @GetMapping("/role")
     public ApiResponse<List<RoleResponse>> getAll() {

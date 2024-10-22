@@ -70,9 +70,9 @@ public class AuthenticationService {
 
     @NonFinal
    
-    @Value("${jwt.signerKey:defaultSignerKey}")
-    protected String signerKey ;
-    // = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
+    // @Value("${jwt.signerKey:defaultSignerKey}")
+    protected String signerKey 
+    = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
 
     private String generateToken(User user) {
 
@@ -87,7 +87,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scop", buidlScop(user))
+                .claim("scope", buildScop(user))
 
                 .build();
 
@@ -119,15 +119,16 @@ public class AuthenticationService {
     }
 
     // custom scop
-    private String buidlScop(User user) {
+    private String buildScop(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles())) {
             // user.getRoles().forEach(s-> stringJoiner.add(s));
             // viet cách khác
             user.getRoles().forEach(role -> {
-                stringJoiner.add(role.getName());
-                if (CollectionUtils.isEmpty(role.getPermission())) {
-                    role.getPermission().forEach(permission -> stringJoiner.add(permission.getName()));
+                // add role and permission vào trong scope
+                stringJoiner.add("ROLE_" + role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
+                    role.getPermissions().forEach(permission -> stringJoiner.add("PERMISSION_" + permission.getName()));
                 }
             });
         }
@@ -147,10 +148,6 @@ public class AuthenticationService {
         tokenRepository.save(mapperToken);
 
     }
-
-    // public Object refreshToken(Object request){
-
-    // }
 
     private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());

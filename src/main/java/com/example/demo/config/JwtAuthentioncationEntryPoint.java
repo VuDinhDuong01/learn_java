@@ -20,7 +20,7 @@ public class JwtAuthentioncationEntryPoint implements AuthenticationEntryPoint{
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
         
-        ErrorCode  errorCode= ErrorCode.USERNAME_INVALID;
+        ErrorCode  errorCode= ErrorCode.USER_EXISTED;
         response.setStatus(errorCode.getStatusCode().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 

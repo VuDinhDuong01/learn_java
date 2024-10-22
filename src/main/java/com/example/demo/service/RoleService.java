@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.domain.Permission;
 import com.example.demo.dto.request.RoleRequest;
 import com.example.demo.dto.response.RoleResponse;
 import com.example.demo.mapper.RoleMapper;
@@ -23,20 +24,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @FieldDefaults(level  =  AccessLevel.PRIVATE)
 public class RoleService {
-    RoleRepository roleRepository;
-    PermissionRepository permissionRepository;
-    RoleMapper roleMapper;
+    final RoleRepository roleRepository;
+    final PermissionRepository permissionRepository;
+    final RoleMapper roleMapper;
     public RoleResponse create(RoleRequest request){
         var role = roleMapper.toRole(request);
-        var permissions = permissionRepository.findAllById(request.getPermissions());
-        role.setPermission(new HashSet<>(permissions));
+       
+       var permissions= permissionRepository.findAllById(request.getPermissions());
+       System.out.println("permission" +  permissions);
+        role.setPermissions(new HashSet<>(permissions));
         roleRepository.save(role);
-        return roleMapper.tRoleResponse(role);
+        return roleMapper.toRoleResponse(role);
     }
 
     public List<RoleResponse> getAll(){
         var role = roleRepository.findAll();
-        return role.stream().map(roleMapper::tRoleResponse).toList();
+        return role.stream().map(roleMapper::toRoleResponse).toList();
     }
 
     public void delete(String role){

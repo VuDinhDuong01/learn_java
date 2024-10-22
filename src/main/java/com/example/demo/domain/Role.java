@@ -31,5 +31,5 @@ public class Role {
 
      // 1 role sẽ có nhiều permission
      @ManyToMany
-     Set<Permission> Permission;
+     Set<Permission> Permissions;
 }
