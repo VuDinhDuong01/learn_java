@@ -31,14 +31,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/users" ,"/api/v1/role","/api/v1/permission"};
+        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect","/api/v1/role","/api/v1/permission"};
 
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
         httpSecurity.authorizeHttpRequests(
                 request -> request
                         .requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers("api/v1/users")
-                        .hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/role").permitAll()
                         .anyRequest()
                         .authenticated());
 
@@ -74,7 +73,7 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;

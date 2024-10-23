@@ -70,13 +70,8 @@ public class AuthenticationService {
 
     @NonFinal
    
-    // @Value("${jwt.signerKey:defaultSignerKey}")
-    protected String signerKey 
-<<<<<<< HEAD
-     = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
-=======
-    = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
->>>>>>> 253a288251b53e51dee2614f7f22332f2eb1baa0
+    @Value("${jwt.keys}")
+    protected String signerKey ;
 
     private String generateToken(User user) {
 
@@ -91,11 +86,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
-<<<<<<< HEAD
-                .claim("scope", buidlScop(user))
-=======
                 .claim("scope", buildScop(user))
->>>>>>> 253a288251b53e51dee2614f7f22332f2eb1baa0
 
                 .build();
 
@@ -156,11 +147,7 @@ public class AuthenticationService {
         tokenRepository.save(mapperToken);
 
     }
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 253a288251b53e51dee2614f7f22332f2eb1baa0
     private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);

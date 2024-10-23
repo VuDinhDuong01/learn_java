@@ -19,27 +19,28 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level  =  AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleService {
-    final RoleRepository roleRepository;
-    final PermissionRepository permissionRepository;
-    final RoleMapper roleMapper;
-    public RoleResponse create(RoleRequest request){
+      RoleRepository roleRepository;
+      PermissionRepository permissionRepository;
+      RoleMapper roleMapper;
+
+    public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
         var permissions = permissionRepository.findAllById(request.getPermissions());
         System.out.println("permisssion:" + role);
-       
+
         role.setPermissions(new HashSet<>(permissions));
         roleRepository.save(role);
         return roleMapper.toRoleResponse(role);
     }
 
-    public List<RoleResponse> getAll(){
+    public List<RoleResponse> getAll() {
         var role = roleRepository.findAll();
         return role.stream().map(roleMapper::toRoleResponse).toList();
     }
 
-    public void delete(String role){
+    public void delete(String role) {
         roleRepository.deleteById(role);
     }
 }

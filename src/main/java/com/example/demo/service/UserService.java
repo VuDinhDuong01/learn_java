@@ -33,11 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserService {
-    final UserRepository userRepository;
-    final UserMapper userMapper;
+     UserRepository userRepository;
+     UserMapper userMapper;
 
-    final PasswordEncoder passwordEncoder;
-    final RoleRepository roleRepository;
+     PasswordEncoder passwordEncoder;
+     RoleRepository roleRepository;
 
     public User createUser(UserRequest request) {
 
