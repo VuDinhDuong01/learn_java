@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  db-mysql:
+    container_name: db-mysql
+    image: mysql:9.1-oraclelinux9
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root 
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - connect
+volumes:
+  db_data:
+networks:
+  connect:

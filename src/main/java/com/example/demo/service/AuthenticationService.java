@@ -49,6 +49,8 @@ public class AuthenticationService {
     UserRepository userRepository;
     TokenRepository tokenRepository;
 
+
+    // buidl dự án dùng mvn package -DskipTets
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -70,9 +72,9 @@ public class AuthenticationService {
 
     @NonFinal
    
-    // @Value("${jwt.signerKey:defaultSignerKey}")
-    protected String signerKey 
-    = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
+    @Value("${jwt.keys}")
+    protected String signerKey;
+    
 
     private String generateToken(User user) {
 
