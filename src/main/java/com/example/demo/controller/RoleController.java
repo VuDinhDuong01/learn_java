@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleController {
-    final RoleService roleService;
+     RoleService roleService;
 
     @GetMapping("/role")
     public ApiResponse<List<RoleResponse>> getAll() {

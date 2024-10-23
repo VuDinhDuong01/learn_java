@@ -150,7 +150,7 @@ public class AuthenticationService {
         tokenRepository.save(mapperToken);
 
     }
-
+    
     private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);

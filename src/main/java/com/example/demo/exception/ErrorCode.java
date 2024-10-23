@@ -14,8 +14,9 @@ public enum ErrorCode {
     INVALID_KEY(1002, "INVALID MESSAGE KEY", HttpStatus.BAD_REQUEST),
     NOT_NULL(400, "NOT NULL", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(400, "USER_NOT_EXISTED", HttpStatus.BAD_REQUEST),
-    INVALID_DOB(1008,"Your age must be at least {min}", HttpStatus.BAD_REQUEST);
-
+    INVALID_DOB(1008,"Your age must be at least {min}", HttpStatus.BAD_REQUEST),
+    AUTHOZRIZATION ( 1009, "TOKEN", HttpStatus.UNAUTHORIZED);
+    
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
         this.message = message;

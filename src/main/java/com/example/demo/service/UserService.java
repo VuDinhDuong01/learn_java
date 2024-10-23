@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -11,12 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.constants.PredefinedRole;
 import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.dto.request.UserRequest;
 import com.example.demo.dto.request.UserUpdate;
-import com.example.demo.dto.response.RoleResponse;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
@@ -36,22 +33,28 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserService {
+     UserRepository userRepository;
+     UserMapper userMapper;
 
-    final UserRepository userRepository;
-    UserMapper userMapper;
-
-    PasswordEncoder passwordEncoder;
-    RoleRepository roleRepository;
+     PasswordEncoder passwordEncoder;
+     RoleRepository roleRepository;
 
     public User createUser(UserRequest request) {
-        var user = userMapper.toUser(request);
+
+        User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
         HashSet<Role> roles = new HashSet<>();
-         roleRepository.findById(RoleEnum.USER.name()).ifPresent(roles::add);
+
+        // kiểm tra xem có tồn tại k , có thì add .
+        roleRepository.findById(RoleEnum.USER.name()).ifPresent(roles::add);
         user.setRoles(roles);
+
         try {
             user = userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
+            // show error
+
         }
 
         return userRepository.save(user);
@@ -59,10 +62,9 @@ public class UserService {
 
     // tạo 1 proxy khi nào là admin.
     // kiểm tra trc khi gọi method
-    // hasRole sẽ work khi có ROLE_ đứng đầu
+    // hasRole sẽ work khi có ROLE đứng đầu
     // k có thì dùng hasAuthority
-    // hasAuthority sẽ map chính xác với scope
-    @PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUser() {
         log.info("in method get user");
         return userRepository.findAll();

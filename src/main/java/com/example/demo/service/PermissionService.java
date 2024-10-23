@@ -16,13 +16,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@FieldDefaults(level =AccessLevel.PRIVATE)
+@FieldDefaults(level =AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
 public class PermissionService {
 
-    final PermissionRepository permissionRepository;
-    final PermissionMapper permissionMapper;
+     PermissionRepository permissionRepository;
+     PermissionMapper permissionMapper;
     public PermissionResponse create(PermissionRequest request) {
 
         Permission permission = permissionMapper.toPermission(request);

@@ -38,6 +38,6 @@ public class UserRequest {
 
     String lastName;
 
-    // @DobConstraint(min = 18, message = "INVALID_DOB")
+    @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
 }

@@ -28,8 +28,6 @@ public class Role {
      String name;
      String description;
 
-
-     // 1 role sẽ có nhiều permission
      @ManyToMany
-     Set<Permission> Permissions;
+     Set<Permission> permissions;
 }
