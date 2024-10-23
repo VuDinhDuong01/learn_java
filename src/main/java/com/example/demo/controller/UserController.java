@@ -37,10 +37,9 @@ public class UserController {
     @PostMapping("/users")
     public ApiResponse<User> createUser(@RequestBody @Valid UserRequest entity) {
 
-        // ApiResponse<User> ApiResponse = new ApiResponse<User>();
-        ApiResponse<User> apiResponse= ApiResponse.<User>builder().message("create success").result(userService.createUser(entity)).build();
-        // ApiResponse.setResult(userService.createUser(entity));
-        // ApiResponse.setMessage("create success");
+        ApiResponse<User> apiResponse= ApiResponse.<User>builder()
+        .message("create success").result(userService.createUser(entity)).build();
+      
         return  apiResponse;
     } 
 

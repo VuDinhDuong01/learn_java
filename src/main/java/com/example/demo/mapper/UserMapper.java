@@ -13,6 +13,8 @@ import com.example.demo.dto.request.UserUpdate;
 
 @Mapper(componentModel = "spring")
 public interface  UserMapper {
+
+    @Mapping(target = "roles", ignore = true)
     User toUser(UserRequest request);
     //  source là cái nguồn lấy để map
     // target là object t sẽ map về.
@@ -20,7 +22,7 @@ public interface  UserMapper {
     // dữ liệu sẽ giống thằng lastName
     // khi có ignore thì sẽ trường dữ liệu được trả về null
     // ví dụ @Mapping(target = "lastName", ignore = true) thì lúc này lastName= null
-    @Mapping(source = "firstName",target = "lastName")
+    
     //  UserResponse toUserResponse(User user);
     // cái này báo là update request vào user
     @Mapping(target = "roles",ignore = true)

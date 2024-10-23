@@ -1,6 +1,7 @@
 package com.example.demo.dto.request;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import com.example.demo.validator.DobConstraint;
 
@@ -29,8 +30,8 @@ public class UserRequest {
     String username;
 
     // @Size(min = 8, max = 20, message = "password must be at least a created")
-    @NonNull
-    @NotBlank
+    // @NonNull
+    // @NotBlank
     String password;
 
     String firstName;

@@ -72,7 +72,11 @@ public class AuthenticationService {
    
     // @Value("${jwt.signerKey:defaultSignerKey}")
     protected String signerKey 
+<<<<<<< HEAD
      = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
+=======
+    = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
+>>>>>>> 253a288251b53e51dee2614f7f22332f2eb1baa0
 
     private String generateToken(User user) {
 
@@ -87,7 +91,11 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
+<<<<<<< HEAD
                 .claim("scope", buidlScop(user))
+=======
+                .claim("scope", buildScop(user))
+>>>>>>> 253a288251b53e51dee2614f7f22332f2eb1baa0
 
                 .build();
 
@@ -119,15 +127,16 @@ public class AuthenticationService {
     }
 
     // custom scop
-    private String buidlScop(User user) {
+    private String buildScop(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles())) {
             // user.getRoles().forEach(s-> stringJoiner.add(s));
             // viet cách khác
             user.getRoles().forEach(role -> {
-                stringJoiner.add(role.getName());
-                if (CollectionUtils.isEmpty(role.getPermissions())) {
-                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
+                // add role and permission vào trong scope
+                stringJoiner.add("ROLE_" + role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
+                    role.getPermissions().forEach(permission -> stringJoiner.add("PERMISSION_" + permission.getName()));
                 }
             });
         }
@@ -147,7 +156,11 @@ public class AuthenticationService {
         tokenRepository.save(mapperToken);
 
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 253a288251b53e51dee2614f7f22332f2eb1baa0
     private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
