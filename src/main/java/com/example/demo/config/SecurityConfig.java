@@ -36,8 +36,8 @@ public class SecurityConfig {
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
         httpSecurity.authorizeHttpRequests(
                 request -> request
-                        .requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/role").permitAll()
+                        // .requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers("/swagger-ui/index.html").permitAll()
                         .anyRequest()
                         .authenticated());
 

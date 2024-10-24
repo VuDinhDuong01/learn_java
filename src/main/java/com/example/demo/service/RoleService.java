@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,6 @@ public class RoleService {
     public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
         var permissions = permissionRepository.findAllById(request.getPermissions());
-        System.out.println("permisssion:" + role);
 
         role.setPermissions(new HashSet<>(permissions));
         roleRepository.save(role);

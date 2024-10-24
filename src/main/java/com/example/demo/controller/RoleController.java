@@ -1,6 +1,13 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,47 +21,43 @@ import com.example.demo.service.RoleService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
 
 @Controller
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class RoleController {
-     RoleService roleService;
+    RoleService roleService;
 
     @GetMapping("/role")
     public ApiResponse<List<RoleResponse>> getAll() {
         return ApiResponse.<List<RoleResponse>>builder()
-        .result(roleService.getAll())
-        .build();
+                .result(roleService.getAll())
+                .build();
     }
 
     @PostMapping("/role")
     public ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest entity) {
-       
-        
+
         return ApiResponse.<RoleResponse>builder()
-        .result(roleService.create(entity))
-        .build();
+                .result(roleService.create(entity))
+                .build();
     }
 
     @DeleteMapping("/role/{name}")
-    public ApiResponse<Void> deleteRole(@PathVariable String name){
+    public ApiResponse<Void> deleteRole(@PathVariable String name) {
         return ApiResponse.<Void>builder()
-        // .result(roleService.delete(name))
-        .build();
+                // .result(roleService.delete(name))
+                .build();
     }
-    
-    
 
 }
