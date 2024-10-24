@@ -10,7 +10,7 @@ COPY pom.xml .
 # copy toan bo code
 COPY src ./src
 # build
-RUN mvn install -DskipTests
+RUN mvn install  -DskipTests
 
 FROM amazoncorretto:21.0.4 as runner
 

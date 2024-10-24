@@ -72,8 +72,8 @@ public class AuthenticationService {
 
     @NonFinal
    
-    @Value("${jwt.keys}")
-    protected String signerKey;
+    // @Value("${jwt.keys}")
+    protected String signerKey = "3YjW35WxwwJHXS7NiQsNrdeilhj2wyqp5qcHmJlOeGLrVOoms6wcqvqP161tF2SC";
     
 
     private String generateToken(User user) {
