@@ -72,8 +72,8 @@ public class AuthenticationService {
 
     @NonFinal
    
-    @Value("${jwt.keys}")
-    protected String signerKey;
+    @Value("${sping.jwt.keys}")
+    protected String signerKey ;
     
 
     private String generateToken(User user) {
