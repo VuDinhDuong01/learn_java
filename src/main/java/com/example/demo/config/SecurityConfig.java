@@ -21,7 +21,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -31,21 +30,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect","/api/v1/role","/api/v1/permission"};
+        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/role", "/api/v1/permission" };
 
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
         httpSecurity.authorizeHttpRequests(
                 request -> request
-                        // .requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers("/swagger-ui/index.html").permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        // .requestMatchers("/swagger-ui/index.html").permitAll()
                         .anyRequest()
                         .authenticated());
 
         //
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfig -> jwtConfig.decoder(jwtDecoder())
                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                .authenticationEntryPoint(new JwtAuthentioncationEntryPoint())
-                );
+                .authenticationEntryPoint(new JwtAuthentioncationEntryPoint()));
         // tắt cors
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
@@ -79,17 +77,16 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-
     @Bean
-    public CorsFilter corsFilter(){
+    public CorsFilter corsFilter() {
 
-        CorsConfiguration configuration= new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedOrigin("https...");
         configuration.addAllowedMethod("*");
 
         // cái này dùng để muốn khai báo cors cho những url nào.
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource= new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }

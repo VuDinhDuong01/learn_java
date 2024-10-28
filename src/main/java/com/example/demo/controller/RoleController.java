@@ -13,8 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.Role;
+import com.example.demo.dto.request.AggregateRequest;
 import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.RoleRequest;
+import com.example.demo.dto.response.AggregateRespones;
 import com.example.demo.dto.response.RoleResponse;
 import com.example.demo.service.RoleService;
 
@@ -38,20 +41,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class RoleController {
     RoleService roleService;
 
-    @GetMapping("/role")
-    public ApiResponse<List<RoleResponse>> getAll() {
-        return ApiResponse.<List<RoleResponse>>builder()
-                .result(roleService.getAll())
-                .build();
-    }
-
     @PostMapping("/role")
-    public ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest entity) {
-
-        return ApiResponse.<RoleResponse>builder()
-                .result(roleService.create(entity))
+    public ApiResponse<AggregateRespones<Role>> findAll(@RequestBody AggregateRequest request) {
+        return ApiResponse.<AggregateRespones<Role>>builder()
+                .result(roleService.customAggregateRole(request))
                 .build();
     }
+
+    // @PostMapping("/role")
+    // public ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest entity)
+    // {
+
+    // return ApiResponse.<RoleResponse>builder()
+    // .result(roleService.create(entity))
+    // .build();
+    // }
 
     @DeleteMapping("/role/{name}")
     public ApiResponse<Void> deleteRole(@PathVariable String name) {
