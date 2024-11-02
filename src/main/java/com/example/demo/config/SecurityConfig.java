@@ -1,5 +1,8 @@
 package com.example.demo.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.context.annotation.Bean;
@@ -21,6 +24,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import com.cloudinary.Cloudinary;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -30,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/role", "/api/v1/permission" };
+        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/role","/api/v1/role/upload", "/api/v1/permission" };
 
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
         httpSecurity.authorizeHttpRequests(
@@ -90,5 +95,17 @@ public class SecurityConfig {
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
+    @Bean
+    public Cloudinary cloudinaryConfig() {
+        Cloudinary cloudinary = null;
+        Map config = new HashMap();
+        config.put("cloud_name","dccijrcef" );
+        config.put("api_key","934173524812968" );
+        config.put("api_secret","zjvE4UmJjVf-VDBYbt-P97uLsV8" );
+        config.put("secure", true);
+        cloudinary = new Cloudinary(config);
+        return cloudinary;
+    }
+
 
 }

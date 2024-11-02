@@ -1,9 +1,15 @@
 package com.example.demo.service;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,17 +17,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
 import com.example.demo.domain.Role;
 import com.example.demo.dto.request.AggregateRequest;
 import com.example.demo.dto.request.RoleRequest;
 import com.example.demo.dto.response.AggregateRespones;
 import com.example.demo.dto.response.RoleResponse;
+import com.example.demo.dto.response.UploadFileResponse;
 import com.example.demo.mapper.RoleMapper;
 import com.example.demo.repository.PermissionRepository;
 import com.example.demo.repository.RoleRepository;
 
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +41,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleService {
+
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     RoleRepository roleRepository;
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;
+    Cloudinary  cloudinary;
+    UploadFileService uploadFileService;
 
     public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
@@ -61,10 +73,10 @@ public class RoleService {
         int skip = Math.max(request.getStart(), 0);
         Sort sort = customSort(request.getSortField(), request.getSortType());
 
-        Pageable pageable = PageRequest.of(skip,limit, sort);
+        Pageable pageable = PageRequest.of(skip, limit, sort);
 
         Specification<Role> spec = (root, query, criteriaBuilder) -> {
-        
+
             List<Predicate> predicates = new ArrayList();
             for (AggregateRequest.Condition cond : request.getConditions()) {
                 var path = root.get(cond.getKey());
@@ -88,9 +100,13 @@ public class RoleService {
     }
 
     private Sort customSort(String sortField, String sortType) {
-        if  (sortField == null || sortField.isEmpty() )  {
+        if (sortField == null || sortField.isEmpty()) {
             return Sort.by("description").descending();
         }
         return sortType == "asc" ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+    }
+
+    public List<UploadFileResponse> uploadImage(List<MultipartFile> file) {
+        return uploadFileService.uploadImage(file);
     }
 }
