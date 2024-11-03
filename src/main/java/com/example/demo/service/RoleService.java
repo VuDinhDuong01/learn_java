@@ -41,12 +41,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleService {
-
-    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     RoleRepository roleRepository;
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;
-    Cloudinary  cloudinary;
     UploadFileService uploadFileService;
 
     public RoleResponse create(RoleRequest request) {

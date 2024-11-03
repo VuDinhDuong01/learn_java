@@ -35,13 +35,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        final String[] PUBLIC_ENDPOINTS = { "/auth/login", "/auth/introspect", "/api/v1/role","/api/v1/role/upload", "/api/v1/permission" };
+        final String[] PUBLIC_ENDPOINTS = { "/auth/login","/api/v1/ ","/api/v1/upload","/api/v1/download", "/auth/introspect" ,"/api/v1/role","/api/v1/role/upload", "/api/v1/permission" };
 
         // permitAll là những router nào match thì k cần authzoiztion còn lại cần.
         httpSecurity.authorizeHttpRequests(
                 request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        // .requestMatchers("/swagger-ui/index.html").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/download").permitAll()
                         .anyRequest()
                         .authenticated());
 
