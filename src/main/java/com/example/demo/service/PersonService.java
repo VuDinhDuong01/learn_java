@@ -17,7 +17,6 @@ import com.example.demo.util.ErrorData;
 import com.example.demo.util.ExcelValidator;
 import com.example.demo.util.UserData;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 @Service
@@ -41,10 +40,12 @@ public class PersonService {
 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
+            // get sheet first in excel.
             Sheet sheet = workbook.getSheetAt(0);
 
             // Kiểm tra và lấy vị trí cột cho name và address
             Row headerRow = sheet.getRow(0);
+            System.out.println("headerRow" +  headerRow.getCell(0));
 
             if (!isValidHeader(headerRow)) {
                 listError.add(new ErrorData("1", "Tiêu đề không đúng hoặc thiếu. Cần có 'name' và 'address'.")); 
@@ -91,11 +92,11 @@ public class PersonService {
             return false;
         }
         for (Cell cell : headerRow) {
-            String cellValue = cell.getStringCellValue().toLowerCase();
-            if ("name".equals(cellValue)) {
+            String cellValue = cell.getStringCellValue();
+            if ("Tên".equals(cellValue)) {
                 nameColumnIndex = cell.getColumnIndex(); // Lưu chỉ số cột của name
             }
-            if ("address".equals(cellValue)) {
+            if ("Địa chỉ".equals(cellValue)) {
                 addressColumnIndex = cell.getColumnIndex(); // Lưu chỉ số cột của address
             }
         }
