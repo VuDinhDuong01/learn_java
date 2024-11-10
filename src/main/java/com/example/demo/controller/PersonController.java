@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.dto.response.ExcelRespnse;
+import com.example.demo.dto.response.BaseResponse;
+import com.example.demo.dto.response.ExcelFinalResponse;
+import com.example.demo.dto.response.ExcelResponse;
 import com.example.demo.service.PersonService;
 
 import lombok.AccessLevel;
@@ -30,13 +32,8 @@ public class PersonController {
     PersonService excelService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
-        excelService.processExcelFile(file);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("successData", excelService.getListSuccess());
-        response.put("errorData", excelService.getListError());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public BaseResponse<Object> uploadFile(@RequestParam("file") MultipartFile file) {
+        BaseResponse<Object> excel=  excelService.processExcelFile(file);
+        return  excel;
     }
 }
